@@ -1,6 +1,10 @@
 import React from 'react'
-
+import Grid from './Grid'
 function App() {
-    return <h1>snek</h1>
+    return (
+        <div className='main'>
+            <Grid size={10} />
+        </div>
+    )
 }
 export default App
