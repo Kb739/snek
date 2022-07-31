@@ -1,19 +1,24 @@
 import React, { useState } from "react";
 import useSnek from "./hooks/useSnek"
+import { gridSize } from "./InitialData"
 
 function Grid(props) {
 
     const [snekData] = useSnek()
 
-    function createGrid(size) {
+    function createGrid(girdSize) {
         const arr = []
-        for (let i = 0; i < size * size; i++) {
+        for (let i = 0; i < gridSize ** 2; i++) {
             const style = {
-                backgroundColor: `${snekData.some(block => block.index === i) ? 'black' : 'white'}`
+                backgroundColor: `${snekData.some(block => posToIndex(block.pos) === i) ? 'black' : 'white'}`
             }
             arr.push(<div className="grid-block" style={style}></div>)
         }
         return arr
+    }
+
+    function posToIndex(pos) {
+        return pos.x + pos.y * 10;
     }
 
     const gridElements = createGrid(props.size)
