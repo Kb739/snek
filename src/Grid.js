@@ -1,18 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useSnek from "./hooks/useSnek"
 import { gridSize } from "./InitialData"
 
 function Grid(props) {
 
     const [snekData] = useSnek()
+    const [foodPos, setFoodPos] = useState(nextFoodPos())
 
-    function createGrid(girdSize) {
-        const arr = []
+    function createGrid(gridSize) {
+        const arr = [];
         for (let i = 0; i < gridSize ** 2; i++) {
-            const style = {
-                backgroundColor: `${snekData.some(block => posToIndex(block.pos) === i) ? 'black' : 'white'}`
+            const block = {
+                style: {
+                    backgroundColor: "white"
+                },
+                className: "grid-block"
             }
-            arr.push(<div className="grid-block" style={style}></div>)
+            const snekBlock = snekData.find(item => posToIndex(item.pos) === i)
+            if (snekBlock) {
+                block.style.backgroundColor = `${snekBlock.color}`
+            }
+            else if (i === foodPos) {
+                block.style.backgroundColor = "red"
+            }
+            arr.push(block)
         }
         return arr
     }
@@ -21,7 +32,19 @@ function Grid(props) {
         return pos.x + pos.y * 10;
     }
 
-    const gridElements = createGrid(props.size)
+    function nextFoodPos() {
+        const emptyBlocks = []
+        for (let i = 0; i < gridSize ** 2; i++) {
+            if (!snekData.some(item => posToIndex(item.pos) === i))
+                emptyBlocks.push(i)
+        }
+        const num = Math.floor(Math.random() * emptyBlocks.length)
+        return emptyBlocks[num]
+    }
+
+    const gridElements = createGrid(props.size).map(block => {
+        return <div className={block.className} style={block.style}></div>
+    })
 
     const gridStyle = {
         display: 'grid',
@@ -29,6 +52,11 @@ function Grid(props) {
         gap: '1px'
 
     }
+
+    useEffect(() => {
+        setFoodPos(nextFoodPos())
+    }, [])
+
     return (
         <div className="grid" style={gridStyle} >
             {gridElements}

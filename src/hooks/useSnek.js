@@ -3,14 +3,14 @@ import { snekData, gridSize } from '../InitialData'
 
 function useSnek() {
 
-    const [data, setData] = useState(snekData)
-    const [direction, setDirection] = useState({ x: 0, y: 1 })
+    const [data, setData] = useState(snekData.body)
+    const [direction, setDirection] = useState(snekData.initialDirection)
     const headPos = data[0].pos
 
     const dirRef = useRef(direction);
     dirRef.current = direction;
 
-    const prevPos = useRef(addDir(headPos, { x: 0, y: -1 }));
+    const prevPos = useRef(addDir(headPos, { x: -direction.x, y: -direction.y }));
     const physicalDir = useRef(direction);
     physicalDir.current = calculatePhysicalDirection()
 
@@ -30,9 +30,8 @@ function useSnek() {
             y: (gridSize + (pos.y + dir.y)) % gridSize
         }
     }
+
     function isOpposite(prevDir, newDir) {
-        console.log(prevDir)
-        console.log(newDir)
         return Math.abs(prevDir.x + newDir.x) + Math.abs(prevDir.y + newDir.y) === 0 ? true : false;
     }
 
@@ -47,6 +46,7 @@ function useSnek() {
             return arr
         })
     }
+
     function updateDirecton({ key }) {
         let x = 0, y = 0;
         switch (key) {
@@ -72,7 +72,6 @@ function useSnek() {
             }
             default: break;
         }
-        // if (dirRef.current.x !== -x && dirRef.current.y !== -y)
         setDirection({ x: x, y: y })
     }
 
