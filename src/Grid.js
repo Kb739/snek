@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import useSnek from "./hooks/useSnek"
 import { gridSize } from "./InitialData"
 
 function Grid(props) {
 
-    const [snekData, headPos] = useSnek()
+    const [snekData, headPos, grow, move] = useSnek()
     const [foodPos, setFoodPos] = useState(nextFoodPos())
     const [spwanFood, setSpawnFood] = useState(true)
 
-    checkCollision();
-
     function checkCollision() {
         if (posToIndex(headPos) === foodPos) {
-            if (!spwanFood)
-                setSpawnFood(true)
+            setSpawnFood(true)
+            grow()
         }
     }
 
@@ -69,6 +67,16 @@ function Grid(props) {
             setSpawnFood(false)
         }
     }, [spwanFood])
+
+    useEffect(() => {
+        setTimeout(() => {
+            move()
+        }, 1000)
+    }, [headPos.x, headPos.y])
+
+    useEffect(() => {
+        checkCollision()
+    }, [headPos.x, headPos.y])
 
     return (
         <div className="grid" style={gridStyle} >

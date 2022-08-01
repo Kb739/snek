@@ -14,6 +14,7 @@ function useSnek() {
     const physicalDir = useRef(direction);
     physicalDir.current = calculatePhysicalDirection()
 
+
     function calculatePhysicalDirection() {
         let x = headPos.x - prevPos.current.x
         let y = headPos.y - prevPos.current.y
@@ -35,8 +36,8 @@ function useSnek() {
         return Math.abs(prevDir.x + newDir.x) + Math.abs(prevDir.y + newDir.y) === 0 ? true : false;
     }
 
-    function move(dir) {
-        const moveDir = isOpposite(physicalDir.current, dir) ? physicalDir.current : dir;
+    function move() {
+        const moveDir = isOpposite(physicalDir.current, dirRef.current) ? physicalDir.current : dirRef.current;
         prevPos.current = headPos;
         setData(prevData => {
             const arr = prevData.map((block, index) => ({
@@ -74,12 +75,11 @@ function useSnek() {
         }
         setDirection({ x: x, y: y })
     }
-
-    useEffect(() => {
-        setTimeout(() => {
-            move(dirRef.current)
-        }, 1000)
-    }, [headPos.x, headPos.y])
+    function grow() {
+        setData(prevData => {
+            return [...prevData, { ...prevData[prevData.length - 1] }]
+        })
+    }
 
     useEffect(() => {
         document.addEventListener('keydown', updateDirecton)
@@ -88,6 +88,6 @@ function useSnek() {
         }
     }, [])
 
-    return [data, headPos]
+    return [data, headPos, grow, move]
 }
 export default useSnek
