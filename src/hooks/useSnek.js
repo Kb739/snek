@@ -88,6 +88,6 @@ function useSnek() {
         }
     }, [])
 
-    return [data]
+    return [data, headPos]
 }
 export default useSnek

@@ -4,8 +4,18 @@ import { gridSize } from "./InitialData"
 
 function Grid(props) {
 
-    const [snekData] = useSnek()
+    const [snekData, headPos] = useSnek()
     const [foodPos, setFoodPos] = useState(nextFoodPos())
+    const [spwanFood, setSpawnFood] = useState(true)
+
+    checkCollision();
+
+    function checkCollision() {
+        if (posToIndex(headPos) === foodPos) {
+            if (!spwanFood)
+                setSpawnFood(true)
+        }
+    }
 
     function createGrid(gridSize) {
         const arr = [];
@@ -54,8 +64,11 @@ function Grid(props) {
     }
 
     useEffect(() => {
-        setFoodPos(nextFoodPos())
-    }, [])
+        if (spwanFood) {
+            setFoodPos(nextFoodPos())
+            setSpawnFood(false)
+        }
+    }, [spwanFood])
 
     return (
         <div className="grid" style={gridStyle} >
