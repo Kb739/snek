@@ -6,21 +6,43 @@ function useSnek() {
     const [data, setData] = useState(snekData)
     const [direction, setDirection] = useState({ x: 0, y: 1 })
     const headPos = data[0].pos
+
     const dirRef = useRef(direction);
     dirRef.current = direction;
 
-    function addDir(pos, dir) {
+    const prevPos = useRef(addDir(headPos, { x: 0, y: -1 }));
+    const physicalDir = useRef(direction);
+    physicalDir.current = calculatePhysicalDirection()
+
+    function calculatePhysicalDirection() {
+        let x = headPos.x - prevPos.current.x
+        let y = headPos.y - prevPos.current.y
+        //normalize 
+        x = x > 1 ? -1 : x < -1 ? 1 : x
+        y = y > 1 ? -1 : y < -1 ? 1 : y
         return {
-            x: (pos.x + dir.x) % gridSize,
-            y: (pos.y + dir.y) % gridSize
+            x, y
         }
     }
+    function addDir(pos, dir) {
+        return {
+            x: (gridSize + (pos.x + dir.x)) % gridSize,
+            y: (gridSize + (pos.y + dir.y)) % gridSize
+        }
+    }
+    function isOpposite(prevDir, newDir) {
+        console.log(prevDir)
+        console.log(newDir)
+        return Math.abs(prevDir.x + newDir.x) + Math.abs(prevDir.y + newDir.y) === 0 ? true : false;
+    }
+
     function move(dir) {
-        console.log('move')
+        const moveDir = isOpposite(physicalDir.current, dir) ? physicalDir.current : dir;
+        prevPos.current = headPos;
         setData(prevData => {
             const arr = prevData.map((block, index) => ({
                 ...block,
-                pos: index == 0 ? addDir(block.pos, dir) : { ...(prevData[index - 1].pos) }
+                pos: index == 0 ? addDir(block.pos, moveDir) : { ...(prevData[index - 1].pos) }
             }))
             return arr
         })
@@ -50,8 +72,8 @@ function useSnek() {
             }
             default: break;
         }
-        // if (direction.x !== -x && direction.y !== -y)
-        setDirection({ x, y })
+        // if (dirRef.current.x !== -x && dirRef.current.y !== -y)
+        setDirection({ x: x, y: y })
     }
 
     useEffect(() => {
