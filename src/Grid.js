@@ -1,19 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import useSnek from "./hooks/useSnek"
-import { gridSize } from "./InitialData"
 
-function Grid(props) {
-
-    const [snekData, headPos, grow, move] = useSnek()
-    const [foodPos, setFoodPos] = useState(nextFoodPos())
-    const [spwanFood, setSpawnFood] = useState(true)
-
-    function checkCollision() {
-        if (posToIndex(headPos) === foodPos) {
-            setSpawnFood(true)
-            grow()
-        }
-    }
+function useGrid(gridSize, drawBlocks) {
+    console.log(drawBlocks)
 
     function createGrid(gridSize) {
         const arr = [];
@@ -24,12 +11,9 @@ function Grid(props) {
                 },
                 className: "grid-block"
             }
-            const snekBlock = snekData.find(item => posToIndex(item.pos) === i)
-            if (snekBlock) {
-                block.style.backgroundColor = `${snekBlock.color}`
-            }
-            else if (i === foodPos) {
-                block.style.backgroundColor = "red"
+            const drawBlock = drawBlocks.find(item => posToIndex(item.pos) === i)
+            if (drawBlock) {
+                block.style.backgroundColor = `${drawBlock.color}`
             }
             arr.push(block)
         }
@@ -40,50 +24,19 @@ function Grid(props) {
         return pos.x + pos.y * 10;
     }
 
-    function nextFoodPos() {
-        const emptyBlocks = []
-        for (let i = 0; i < gridSize ** 2; i++) {
-            if (!snekData.some(item => posToIndex(item.pos) === i))
-                emptyBlocks.push(i)
-        }
-        const num = Math.floor(Math.random() * emptyBlocks.length)
-        return emptyBlocks[num]
-    }
-
-    const gridElements = createGrid(props.size).map(block => {
-        return <div className={block.className} style={block.style}></div>
-    })
-
     const gridStyle = {
         display: 'grid',
-        gridTemplate: `repeat(${props.size},1fr)/repeat(${props.size},1fr)`,
+        gridTemplate: `repeat(${gridSize},1fr)/repeat(${gridSize},1fr)`,
         gap: '1px'
-
     }
 
-    useEffect(() => {
-        if (spwanFood) {
-            setFoodPos(nextFoodPos())
-            setSpawnFood(false)
-        }
-    }, [spwanFood])
-
-    useEffect(() => {
-        setTimeout(() => {
-            move()
-        }, 1000)
-    }, [headPos.x, headPos.y])
-
-    useEffect(() => {
-        checkCollision()
-    }, [headPos.x, headPos.y])
-
     return (
-        <div className="grid" style={gridStyle} >
-            {gridElements}
-        </div>
+        {
+            grid: createGrid(gridSize),
+            gridStyle
+        }
     )
 }
 
-export default Grid
+export default useGrid
 

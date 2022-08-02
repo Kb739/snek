@@ -5,8 +5,12 @@ function useSnek() {
 
     const [data, setData] = useState(snekData.body)
     const [direction, setDirection] = useState(snekData.initialDirection)
+    const [selfCollision, setSelfCollision] = useState(false)
     const headPos = data[0].pos
+    console.log(headPos)
 
+    const dataRef = useRef(data);
+    dataRef.current = data;
     const dirRef = useRef(direction);
     dirRef.current = direction;
 
@@ -36,20 +40,34 @@ function useSnek() {
         return Math.abs(prevDir.x + newDir.x) + Math.abs(prevDir.y + newDir.y) === 0 ? true : false;
     }
 
+    function predictCollision(data) {
+        const head = data[0].pos;
+        for (let i = 1; i < data.length; i++) {
+            const { x, y } = data[i].pos
+            if (head.x === x && head.y === y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function move() {
         const moveDir = isOpposite(physicalDir.current, dirRef.current) ? physicalDir.current : dirRef.current;
-        prevPos.current = headPos;
-        setData(prevData => {
-            const arr = prevData.map((block, index) => ({
-                ...block,
-                pos: index == 0 ? addDir(block.pos, moveDir) : { ...(prevData[index - 1].pos) }
-            }))
-            return arr
-        })
+        const data = dataRef.current
+        const arr = data.map((block, index) => ({
+            ...block,
+            pos: index == 0 ? addDir(block.pos, moveDir) : { ...(data[index - 1].pos) }
+        }))
+        if (predictCollision(arr)) {
+            setSelfCollision(true);
+        } else {
+            prevPos.current = headPos;
+            setData(arr)
+        }
     }
 
     function updateDirecton({ key }) {
-        let x = 0, y = 0;
+        let { x, y } = direction;
         switch (key) {
             case 'w': {
                 x = 0
@@ -76,9 +94,20 @@ function useSnek() {
         setDirection({ x: x, y: y })
     }
     function grow() {
+        console.log('grow');
         setData(prevData => {
             return [...prevData, { ...prevData[prevData.length - 1] }]
         })
+    }
+
+    function reset() {
+        const { body, initialDirection } = snekData;
+        const headPos = body[0].pos;
+        prevPos.current = addDir(headPos, { x: -initialDirection.x, y: -initialDirection.y })
+        setSelfCollision(false)
+        setData(body)
+        setDirection(initialDirection)
+
     }
 
     useEffect(() => {
@@ -88,6 +117,6 @@ function useSnek() {
         }
     }, [])
 
-    return [data, headPos, grow, move]
+    return [data, grow, move, reset, selfCollision]
 }
 export default useSnek
