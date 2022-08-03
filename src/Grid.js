@@ -21,7 +21,7 @@ function useGrid(gridSize, drawBlocks) {
     }
 
     function posToIndex(pos) {
-        return pos.x + pos.y * 10;
+        return pos.x + pos.y * gridSize;
     }
 
     const gridStyle = {

@@ -5,21 +5,21 @@ const snekData = {
                 x: 5,
                 y: 5
             },
-            color: 'black'
+            color: '#2cb42c'
         },
         {
             pos: {
                 x: 4,
                 y: 5
             },
-            color: 'grey'
+            color: '#42d142'
         },
         {
             pos: {
                 x: 3,
                 y: 5
             },
-            color: 'grey'
+            color: '#42d142'
         }
     ],
     initialDirection: {
@@ -29,5 +29,5 @@ const snekData = {
 
 
 }
-const gridSize = 10;
+const gridSize = 16;
 export { snekData, gridSize }
