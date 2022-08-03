@@ -27,7 +27,6 @@ function useGrid(gridSize, drawBlocks) {
     const gridStyle = {
         display: 'grid',
         gridTemplate: `repeat(${gridSize},1fr)/repeat(${gridSize},1fr)`,
-        gap: '1px'
     }
 
     return (

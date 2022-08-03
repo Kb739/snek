@@ -109,10 +109,10 @@ function App() {
 
     return (
         <div className='main'>
+            <ScoreBar playerScore={playerScore} />
             <div className="grid" style={gridStyle}>
                 {gridElements}
             </div>
-            <ScoreBar playerScore={playerScore} />
             {
                 isGameOver ? <button onClick={restartGame}>restart</button>
                     : !isGameRunning ? <button onClick={startGame}>start</button> : ''

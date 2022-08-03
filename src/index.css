@@ -13,16 +13,41 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid black;
-  padding: 50px;
+  justify-content: center;
+  gap: 10px;
+  border: 5px solid black;
 
 }
 
 .grid {
-  width: 100%;
+  width: 50%;
   aspect-ratio: 1/1;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: 2px solid black;
 }
 
 .grid-block {
-  border: 1px solid black;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+.score-bar {
+  display: flex;
+  gap: 75px;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  background-color: cadetblue;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 5px;
+  color: aliceblue;
+  letter-spacing: 2px;
+  box-shadow: 0 2px 5px grey;
+  padding: 0.25em 1em;
 }
