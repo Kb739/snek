@@ -5,8 +5,11 @@ import useSnek from "./hooks/useSnek"
 import useFood from "./hooks/useFood"
 import ScoreBar from './ScoreBar'
 
+const UPDATE_INTERVAL = 1000;
+const MIN_INTERVAL = 50;
 function App() {
 
+    const [updateInterval, setUpdateInterval] = useState(UPDATE_INTERVAL)
     const [foodRespawn, setFoodRespawn] = useState(false)
     const [snekData, grow, snekMove, snekReset, selfCollision] = useSnek()
     const foodData = useFood(snekData, gridSize, foodRespawn);
@@ -50,6 +53,7 @@ function App() {
     function startGame() {
         setIsGameRunning(true)
         setIsGameOver(false)
+        setUpdateInterval(UPDATE_INTERVAL)
     }
 
     function update() {
@@ -75,6 +79,7 @@ function App() {
             grow()
             setFoodRespawn(true)
             addToScore()
+            setUpdateInterval(prevInterval => Math.max(MIN_INTERVAL, prevInterval - 50))
         }
         else if (collision_SnekToSelf()) {
             gameOver()
@@ -87,7 +92,7 @@ function App() {
                 if (isGameRunningRef.current) {
                     update()
                 }
-            }, 1000)
+            }, updateInterval)
         }
     }, [headPos.x, headPos.y, isGameRunning])
 
