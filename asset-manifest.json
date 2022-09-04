@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/snek/static/css/main.5b9a256f.css",
+    "main.js": "/snek/static/js/main.709230b3.js",
+    "index.html": "/snek/index.html",
+    "main.5b9a256f.css.map": "/snek/static/css/main.5b9a256f.css.map",
+    "main.709230b3.js.map": "/snek/static/js/main.709230b3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5b9a256f.css",
+    "static/js/main.709230b3.js"
+  ]
+}
